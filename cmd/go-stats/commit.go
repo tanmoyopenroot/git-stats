@@ -39,7 +39,6 @@ func GenerateCommitList(gitPath string, SHA string) *list.List {
 
 		daysAgo := utils.CountDaysFromNow(time.Unix(i, 0))
 		commitMap[daysAgo]++
-		fmt.Println(daysAgo)
 		if len(data.Parent) == 0 {
 			break
 		}
@@ -47,6 +46,6 @@ func GenerateCommitList(gitPath string, SHA string) *list.List {
 	}
 
 	fmt.Println(commitMap)
-
+	utils.PlotCommits(commitMap)
 	return commitList
 }
