@@ -1,7 +1,7 @@
 package models
 
-// CommiterModel ... Git Commiter's Model
-type CommiterModel struct {
+// Commiter ... Git Commiter's Model
+type Commiter struct {
 	Name      string
 	Email     string
 	TimeStamp string

@@ -61,6 +61,56 @@ func extractTimeStamp(data string) string {
 	return splitData[len(splitData)-2]
 }
 
+func extractCommiter(data string) models.Commiter {
+	return models.Commiter{
+		Name:      extractString(data, "committer", "<"),
+		Email:     extractString(data, "<", ">"),
+		TimeStamp: extractTimeStamp(data),
+	}
+}
+
+func extractAuthor(data string) models.Author {
+	return models.Author{
+		Name:      extractString(data, "author", "<"),
+		Email:     extractString(data, "<", ">"),
+		TimeStamp: extractTimeStamp(data),
+	}
+}
+
+func isTypeMerge(data []string) bool {
+	return strings.Index(data[2], "parent") > 0
+}
+
+func extractDataFromCommit(data []string, searchKey string) interface{} {
+	for i := 0; i < len(data); i++ {
+		if strings.Index(data[i], searchKey) >= 0 {
+			switch searchKey {
+			case "tree":
+				return extractString(data[i], "tree", "")
+			case "parent":
+				return extractString(data[i], "parent", "")
+			case "author":
+				return extractAuthor(data[i])
+			case "commiter":
+				return extractCommiter(data[i])
+			}
+		}
+	}
+
+	switch searchKey {
+	case "tree":
+		return ""
+	case "parent":
+		return ""
+	case "author":
+		return models.Author{}
+	case "commiter":
+		return models.Commiter{}
+	default:
+		return nil
+	}
+}
+
 func createGitCommitObject(data io.ReadCloser) (*models.CommitModel, error) {
 	byteData, err := ioutil.ReadAll(data)
 	if err != nil {
@@ -75,29 +125,13 @@ func createGitCommitObject(data io.ReadCloser) (*models.CommitModel, error) {
 	// 	fmt.Println(i, " -> ", commitData[i])
 	// }
 
-	skipIndex := 0
-	objectType := "commit"
-	if strings.Index(commitData[2], "parent") >= 0 {
-		skipIndex = 1
-		objectType = "merge"
-	}
-
 	commitObj := &models.CommitModel{
-		Commit: extractString(commitData[0], "commit", "tree"),
-		Tree:   extractString(commitData[0], "tree", ""),
-		Parent: extractString(commitData[1], "parent", ""),
-		Author: &models.AuthorModel{
-			Name:      extractString(commitData[skipIndex+2], "author", "<"),
-			Email:     extractString(commitData[skipIndex+2], "<", ">"),
-			TimeStamp: extractTimeStamp(commitData[skipIndex+2]),
-		},
-		Commiter: &models.CommiterModel{
-			Name:      extractString(commitData[skipIndex+3], "committer", "<"),
-			Email:     extractString(commitData[skipIndex+3], "<", ">"),
-			TimeStamp: extractTimeStamp(commitData[skipIndex+3]),
-		},
-		Message: commitData[skipIndex+5],
-		Type:    objectType,
+		Tree:     extractDataFromCommit(commitData, "tree").(string),
+		Parent:   extractDataFromCommit(commitData, "parent").(string),
+		Author:   extractDataFromCommit(commitData, "author").(models.Author),
+		Commiter: extractDataFromCommit(commitData, "commiter").(models.Commiter),
+		Message:  commitData[len(commitData)-2],
+		Type:     isTypeMerge(commitData),
 	}
 
 	return commitObj, nil
