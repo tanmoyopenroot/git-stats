@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"strings"
-	"unicode"
 )
 
 // ReadObject ... Get contents of the object from a given path
@@ -18,15 +17,6 @@ func ReadObject(path string) (*models.CommitModel, error) {
 	}
 
 	return readCompressedData(buf)
-}
-
-func removeSpace(str string) string {
-	return strings.Map(func(r rune) rune {
-		if unicode.IsSpace(r) {
-			return -1
-		}
-		return r
-	}, str)
 }
 
 func readCompressedData(buf []byte) (*models.CommitModel, error) {
