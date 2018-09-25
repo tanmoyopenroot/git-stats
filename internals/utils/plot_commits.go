@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func getCommitKeys(commits map[int]int) []int {
@@ -16,54 +17,84 @@ func getCommitKeys(commits map[int]int) []int {
 	return keys
 }
 
-func printCell(val int, today bool) {
-	escape := "\033[0;37;30m"
+func drawCommitCell(commitValue int, isToday bool) {
+	dataToBePrinted := ""
+
 	switch {
-	case val > 0 && val < 5:
-		escape = "\033[1;30;47m"
-	case val >= 5 && val < 10:
-		escape = "\033[1;30;43m"
-	case val >= 10:
-		escape = "\033[1;30;42m"
+	case commitValue > 0 && commitValue < 5:
+		dataToBePrinted = Commited0To5Color
+	case commitValue >= 5 && commitValue < 10:
+		dataToBePrinted = Commited5To10Color
+	case commitValue >= 10:
+		dataToBePrinted = CommitedMoreThan10Color
+	case commitValue >= 100:
+		dataToBePrinted = CommitedMoreThan100Color
 	}
 
-	if today {
-		escape = "\033[1;37;45m"
+	if isToday {
+		dataToBePrinted = TodaysCellColor
 	}
 
-	if val == 0 {
-		fmt.Printf(escape + "  - " + "\033[0m")
-		return
-	}
+	space := "  %s "
 
-	str := "  %d "
 	switch {
-	case val >= 10:
-		str = " %d "
-	case val >= 100:
-		str = "%d "
+	case commitValue >= 10:
+		space = " %s "
+	case commitValue >= 100:
+		space = "%s "
 	}
 
-	fmt.Printf(escape+str+"\033[0m", val)
+	data := "-"
+	if commitValue != 0 {
+		data = strconv.Itoa(commitValue)
+	}
+
+	dataToBePrinted = dataToBePrinted + space + EndColor
+	fmt.Printf(dataToBePrinted, data)
 }
 
-func printCells(graph [7][maxWeeks]int) {
+func drawTopBottomBoundries() {
+	for j := MaxWeeks + 1; j >= 0; j-- {
+		fmt.Printf(BoundaryColor, "====")
+	}
+}
+
+func drawLeftRightBoundries() {
+	fmt.Printf(BoundaryColor, " || ")
+}
+
+func processCommitCells(graph [7][MaxWeeks]int) {
 	for i := 6; i >= 0; i-- {
-		for j := maxWeeks - 1; j >= 0; j-- {
+		if i == 6 {
+			drawTopBottomBoundries()
+			fmt.Printf("\n")
+		}
+
+		drawLeftRightBoundries()
+
+		for j := MaxWeeks - 1; j >= 0; j-- {
 			if i == 0 && j == 0 {
-				printCell(graph[i][j], true)
+				drawCommitCell(graph[i][j], true)
 			} else {
-				printCell(graph[i][j], false)
+				drawCommitCell(graph[i][j], false)
 			}
 		}
+
+		drawLeftRightBoundries()
+
 		fmt.Printf("\n")
+
+		if i == 0 {
+			drawTopBottomBoundries()
+			fmt.Printf("\n")
+		}
 	}
 }
 
 // PlotCommits ... Plot the generated commits
 func PlotCommits(commits map[int]int) {
 	var (
-		graph [7][maxWeeks]int
+		graph [7][MaxWeeks]int
 	)
 
 	keys := getCommitKeys(commits)
@@ -77,5 +108,5 @@ func PlotCommits(commits map[int]int) {
 	}
 
 	// fmt.Println(graph)
-	printCells(graph)
+	processCommitCells(graph)
 }

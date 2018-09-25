@@ -47,5 +47,6 @@ func GenerateCommitList(gitPath string, SHA string) *list.List {
 
 	fmt.Println(commitMap)
 	utils.PlotCommits(commitMap)
+	// utils.PrintAvailableColors()
 	return commitList
 }
