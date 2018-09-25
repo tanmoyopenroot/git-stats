@@ -45,6 +45,6 @@ func GenerateCommitList(gitPath string, SHA string) (*list.List, map[int]int) {
 		SHA = data.Parent
 	}
 
-	fmt.Println(commitMap)
+	// fmt.Println(commitMap)
 	return commitList, commitMap
 }

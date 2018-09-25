@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"git-stats/internals/constants"
 	"git-stats/internals/git"
 	"git-stats/internals/stats"
 	"os"
 	"path"
+	"strconv"
 )
 
 func main() {
@@ -28,10 +30,14 @@ func main() {
 		return
 	}
 
-	userEmail, err := git.GetUserEmail(gitPath)
-	fmt.Println(userEmail)
-	commitList, commitMap := GenerateCommitList(gitPath, headSHA)
 	// constants.PrintAvailableColors()
+
+	userEmail, err := git.GetUserEmail(gitPath)
+	fmt.Println(constants.YellowText + "Branch: " + currentBranchPath + constants.EndText)
+	fmt.Println(constants.DeepBlueText + "User Email: " + userEmail + constants.EndText)
+
+	commitList, commitMap := GenerateCommitList(gitPath, headSHA)
+	fmt.Println("\n" + constants.WhiteText + strconv.Itoa(commitList.Len()) + " contributions in " + currentBranchPath + constants.EndText)
 	stats.PlotCommits(commitMap)
 	stats.ProcessCommits(commitList, userEmail)
 }

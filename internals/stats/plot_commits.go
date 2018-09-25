@@ -104,7 +104,6 @@ func PlotCommits(commits map[int]int) {
 		week := int(key / 7)
 		day := key % 7
 
-		fmt.Println(week, day, commits[key])
 		graph[day][week] = commits[key]
 	}
 

@@ -12,7 +12,7 @@ import (
 
 func displayCommits(commitList *list.List) {
 	if commitList.Len() > 0 {
-		fmt.Println("\n" + constants.GreenText + "Last " + strconv.Itoa(constants.ShowMaxCommits) + " commits from the current branch:" + constants.EndText)
+		fmt.Println("\n" + constants.WhiteText + "COMMITS(Latest " + strconv.Itoa(constants.ShowMaxCommits) + ")" + constants.EndText)
 		fmt.Print("\n")
 	}
 
@@ -24,7 +24,7 @@ func displayCommits(commitList *list.List) {
 			break
 		}
 		authorCommitTime := strings.Split(time.Unix(i, 0).String(), " ")[0]
-		fmt.Println(constants.YellowText + data.Message + constants.EndText)
+		fmt.Println("Message: " + constants.YellowText + data.Message + constants.EndText)
 		fmt.Println(constants.GreyText + data.Author.Name + " authored on " + authorCommitTime + constants.EndText)
 		fmt.Print("\n")
 	}
@@ -32,7 +32,7 @@ func displayCommits(commitList *list.List) {
 
 func displayMerges(mergeList *list.List) {
 	if mergeList.Len() > 0 {
-		fmt.Println("\n" + constants.GreenText + "Last " + strconv.Itoa(constants.ShowMaxMerges) + " merges from the current branch:" + constants.EndText)
+		fmt.Println("\n" + constants.WhiteText + "MERGES(Latest " + strconv.Itoa(constants.ShowMaxMerges) + ")" + constants.EndText)
 		fmt.Print("\n")
 	}
 
@@ -44,7 +44,7 @@ func displayMerges(mergeList *list.List) {
 			break
 		}
 		authorCommitTime := strings.Split(time.Unix(i, 0).String(), " ")[0]
-		fmt.Println(constants.YellowText + data.Message + constants.EndText)
+		fmt.Println("Message: " + constants.YellowText + data.Message + constants.EndText)
 		fmt.Println(constants.GreyText + data.Author.Name + " authored on " + authorCommitTime + constants.EndText)
 		fmt.Print("\n")
 	}
@@ -71,6 +71,10 @@ func ProcessCommits(commitList *list.List, userEmail string) {
 				break
 			}
 		}
+	}
+
+	if commitList.Len() > 0 {
+		fmt.Println("\n" + constants.GreenText + "CONTRIBUTION ACTIVITY" + constants.EndText)
 	}
 
 	displayCommits(lastestCommitList)
