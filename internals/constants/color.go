@@ -1,11 +1,8 @@
-package utils
+package constants
 
 import "fmt"
 
 const (
-	// MaxWeeks ... Maximum number of weeks
-	MaxWeeks = 26
-
 	// GreyText ... Grey color for text
 	GreyText = "\x1b[30;1m"
 	// RedText ... Red color for text

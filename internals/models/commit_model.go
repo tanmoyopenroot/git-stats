@@ -6,6 +6,6 @@ type CommitModel struct {
 	Parent string
 	Author
 	Commiter
-	Message string
-	Type    bool
+	Message   string
+	TypeMerge bool
 }

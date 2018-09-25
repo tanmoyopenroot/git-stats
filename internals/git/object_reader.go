@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"git-stats/internals/models"
+	"git-stats/internals/utils"
 	"io"
 	"io/ioutil"
 	"strings"
@@ -30,22 +31,6 @@ func readCompressedData(buf []byte) (*models.CommitModel, error) {
 	return createGitCommitObject(data)
 }
 
-func extractString(data string, start string, end string) string {
-	s := 0
-	e := len(data)
-
-	if start != "" {
-		s = strings.Index(data, start)
-		s += len(start)
-	}
-
-	if end != "" {
-		e = strings.Index(data, end)
-	}
-
-	return strings.TrimSpace(data[s:e])
-}
-
 func extractTimeStamp(data string) string {
 	splitData := strings.Split(data, " ")
 	return splitData[len(splitData)-2]
@@ -53,16 +38,16 @@ func extractTimeStamp(data string) string {
 
 func extractCommiter(data string) models.Commiter {
 	return models.Commiter{
-		Name:      extractString(data, "committer", "<"),
-		Email:     extractString(data, "<", ">"),
+		Name:      utils.ExtractString(data, "committer", "<"),
+		Email:     utils.ExtractString(data, "<", ">"),
 		TimeStamp: extractTimeStamp(data),
 	}
 }
 
 func extractAuthor(data string) models.Author {
 	return models.Author{
-		Name:      extractString(data, "author", "<"),
-		Email:     extractString(data, "<", ">"),
+		Name:      utils.ExtractString(data, "author", "<"),
+		Email:     utils.ExtractString(data, "<", ">"),
 		TimeStamp: extractTimeStamp(data),
 	}
 }
@@ -76,9 +61,9 @@ func extractDataFromCommit(data []string, searchKey string) interface{} {
 		if strings.Index(data[i], searchKey) >= 0 {
 			switch searchKey {
 			case "tree":
-				return extractString(data[i], "tree", "")
+				return utils.ExtractString(data[i], "tree", "")
 			case "parent":
-				return extractString(data[i], "parent", "")
+				return utils.ExtractString(data[i], "parent", "")
 			case "author":
 				return extractAuthor(data[i])
 			case "commiter":
@@ -116,12 +101,12 @@ func createGitCommitObject(data io.ReadCloser) (*models.CommitModel, error) {
 	// }
 
 	commitObj := &models.CommitModel{
-		Tree:     extractDataFromCommit(commitData, "tree").(string),
-		Parent:   extractDataFromCommit(commitData, "parent").(string),
-		Author:   extractDataFromCommit(commitData, "author").(models.Author),
-		Commiter: extractDataFromCommit(commitData, "commiter").(models.Commiter),
-		Message:  commitData[len(commitData)-2],
-		Type:     isTypeMerge(commitData),
+		Tree:      extractDataFromCommit(commitData, "tree").(string),
+		Parent:    extractDataFromCommit(commitData, "parent").(string),
+		Author:    extractDataFromCommit(commitData, "author").(models.Author),
+		Commiter:  extractDataFromCommit(commitData, "commiter").(models.Commiter),
+		Message:   commitData[len(commitData)-2],
+		TypeMerge: isTypeMerge(commitData),
 	}
 
 	return commitObj, nil

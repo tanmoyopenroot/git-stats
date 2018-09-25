@@ -12,7 +12,7 @@ import (
 )
 
 // GenerateCommitList ... Generate list of commits of the current branch
-func GenerateCommitList(gitPath string, SHA string) *list.List {
+func GenerateCommitList(gitPath string, SHA string) (*list.List, map[int]int) {
 	var (
 		dataPath string
 		data     *models.CommitModel
@@ -46,7 +46,5 @@ func GenerateCommitList(gitPath string, SHA string) *list.List {
 	}
 
 	fmt.Println(commitMap)
-	utils.PlotCommits(commitMap)
-	// utils.PrintAvailableColors()
-	return commitList
+	return commitList, commitMap
 }

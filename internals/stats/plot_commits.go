@@ -1,7 +1,8 @@
-package utils
+package stats
 
 import (
 	"fmt"
+	"git-stats/internals/constants"
 	"strconv"
 )
 
@@ -22,17 +23,17 @@ func drawCommitCell(commitValue int, isToday bool) {
 
 	switch {
 	case commitValue > 0 && commitValue < 5:
-		dataToBePrinted = Commited0To5Color
+		dataToBePrinted = constants.Commited0To5Color
 	case commitValue >= 5 && commitValue < 10:
-		dataToBePrinted = Commited5To10Color
+		dataToBePrinted = constants.Commited5To10Color
 	case commitValue >= 10:
-		dataToBePrinted = CommitedMoreThan10Color
+		dataToBePrinted = constants.CommitedMoreThan10Color
 	case commitValue >= 100:
-		dataToBePrinted = CommitedMoreThan100Color
+		dataToBePrinted = constants.CommitedMoreThan100Color
 	}
 
 	if isToday {
-		dataToBePrinted = TodaysCellColor
+		dataToBePrinted = constants.TodaysCellColor
 	}
 
 	space := "  %s "
@@ -49,21 +50,21 @@ func drawCommitCell(commitValue int, isToday bool) {
 		data = strconv.Itoa(commitValue)
 	}
 
-	dataToBePrinted = dataToBePrinted + space + EndColor
+	dataToBePrinted = dataToBePrinted + space + constants.EndColor
 	fmt.Printf(dataToBePrinted, data)
 }
 
 func drawTopBottomBoundries() {
-	for j := MaxWeeks + 1; j >= 0; j-- {
-		fmt.Printf(BoundaryColor, "====")
+	for j := constants.MaxWeeks + 1; j >= 0; j-- {
+		fmt.Printf(constants.BoundaryColor, "----")
 	}
 }
 
 func drawLeftRightBoundries() {
-	fmt.Printf(BoundaryColor, " || ")
+	fmt.Printf(constants.BoundaryColor, " || ")
 }
 
-func processCommitCells(graph [7][MaxWeeks]int) {
+func processCommitCells(graph [7][constants.MaxWeeks]int) {
 	for i := 6; i >= 0; i-- {
 		if i == 6 {
 			drawTopBottomBoundries()
@@ -72,7 +73,7 @@ func processCommitCells(graph [7][MaxWeeks]int) {
 
 		drawLeftRightBoundries()
 
-		for j := MaxWeeks - 1; j >= 0; j-- {
+		for j := constants.MaxWeeks - 1; j >= 0; j-- {
 			if i == 0 && j == 0 {
 				drawCommitCell(graph[i][j], true)
 			} else {
@@ -94,7 +95,7 @@ func processCommitCells(graph [7][MaxWeeks]int) {
 // PlotCommits ... Plot the generated commits
 func PlotCommits(commits map[int]int) {
 	var (
-		graph [7][MaxWeeks]int
+		graph [7][constants.MaxWeeks]int
 	)
 
 	keys := getCommitKeys(commits)

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"git-stats/internals/git"
+	"git-stats/internals/stats"
 	"os"
 	"path"
 )
@@ -27,8 +28,10 @@ func main() {
 		return
 	}
 
-	_ = GenerateCommitList(gitPath, headSHA)
-	// for commit := commitList.Front(); commit != nil; commit = commit.Next() {
-	// 	fmt.Println(commit.Value)
-	// }
+	userEmail, err := git.GetUserEmail(gitPath)
+	fmt.Println(userEmail)
+	commitList, commitMap := GenerateCommitList(gitPath, headSHA)
+	// constants.PrintAvailableColors()
+	stats.PlotCommits(commitMap)
+	stats.ProcessCommits(commitList, userEmail)
 }
