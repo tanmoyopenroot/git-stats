@@ -7,8 +7,6 @@ import (
 	"git-stats/internals/models"
 	"git-stats/internals/utils"
 	"path"
-	"strconv"
-	"time"
 )
 
 // GenerateCommitList ... Generate list of commits of the current branch
@@ -31,13 +29,7 @@ func GenerateCommitList(gitPath string, SHA string) (*list.List, map[int]int) {
 		}
 
 		commitList.PushBack(data)
-		i, err := strconv.ParseInt(data.Author.TimeStamp, 10, 64)
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-
-		daysAgo := utils.CountDaysFromNow(time.Unix(i, 0))
+		daysAgo := utils.CountDaysFromNow(utils.ConvertTimeStamp(data.Author.TimeStamp))
 		commitMap[daysAgo]++
 		if len(data.Parent) == 0 {
 			break

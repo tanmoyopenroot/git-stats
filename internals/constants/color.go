@@ -39,6 +39,8 @@ const (
 
 	// BoundaryColor ... Set boundary color
 	BoundaryColor = WhiteText + "%s" + EndText
+	// MonthColor ... set month color
+	MonthColor = WhiteText + " %s" + EndText
 )
 
 // PrintAvailableColors ... Print available colors

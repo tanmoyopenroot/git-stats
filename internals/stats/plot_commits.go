@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git-stats/internals/constants"
 	"strconv"
+	"time"
 )
 
 func getCommitKeys(commits map[int]int) []int {
@@ -64,10 +65,36 @@ func drawLeftRightBoundries() {
 	fmt.Printf(constants.BoundaryColor, " || ")
 }
 
+func printMonths() {
+	currentTime := time.Now()
+	pastTime := currentTime.Add(-constants.MaxWeeks * time.Hour * 24 * 7)
+
+	currentMonth := pastTime.Month()
+	prevMonth := pastTime.Month()
+	pastTime = pastTime.Add(time.Hour * 24 * 7)
+
+	fmt.Printf(constants.BoundaryColor, " ||  ")
+
+	for pastTime.Before(currentTime) {
+		currentMonth = pastTime.Month()
+		if currentMonth != prevMonth {
+			fmt.Printf(constants.MonthColor, prevMonth.String()[:3])
+			prevMonth = currentMonth
+		} else {
+			fmt.Print("    ")
+		}
+		pastTime = pastTime.Add(time.Hour * 24 * 7)
+	}
+	fmt.Printf(constants.MonthColor, prevMonth.String()[:3])
+	fmt.Printf(constants.BoundaryColor, "||")
+}
+
 func processCommitCells(graph [7][constants.MaxWeeks]int) {
 	for i := 6; i >= 0; i-- {
 		if i == 6 {
 			drawTopBottomBoundries()
+			fmt.Printf("\n")
+			printMonths()
 			fmt.Printf("\n")
 		}
 

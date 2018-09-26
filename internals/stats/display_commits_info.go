@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"git-stats/internals/constants"
 	"git-stats/internals/models"
+	"git-stats/internals/utils"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func displayCommits(commitList *list.List) {
@@ -18,12 +18,7 @@ func displayCommits(commitList *list.List) {
 
 	for commit := commitList.Front(); commit != nil; commit = commit.Next() {
 		data := commit.Value.(*models.CommitModel)
-		i, err := strconv.ParseInt(data.Author.TimeStamp, 10, 64)
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-		authorCommitTime := strings.Split(time.Unix(i, 0).String(), " ")[0]
+		authorCommitTime := strings.Split(utils.ConvertTimeStamp(data.Author.TimeStamp).String(), " ")[0]
 		fmt.Println("Message: " + constants.YellowText + data.Message + constants.EndText)
 		fmt.Println(constants.GreyText + data.Author.Name + " authored on " + authorCommitTime + constants.EndText)
 		fmt.Print("\n")
@@ -38,12 +33,7 @@ func displayMerges(mergeList *list.List) {
 
 	for commit := mergeList.Front(); commit != nil; commit = commit.Next() {
 		data := commit.Value.(*models.CommitModel)
-		i, err := strconv.ParseInt(data.Author.TimeStamp, 10, 64)
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-		authorCommitTime := strings.Split(time.Unix(i, 0).String(), " ")[0]
+		authorCommitTime := strings.Split(utils.ConvertTimeStamp(data.Author.TimeStamp).String(), " ")[0]
 		fmt.Println("Message: " + constants.YellowText + data.Message + constants.EndText)
 		fmt.Println(constants.GreyText + data.Author.Name + " authored on " + authorCommitTime + constants.EndText)
 		fmt.Print("\n")
