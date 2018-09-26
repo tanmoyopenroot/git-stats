@@ -66,26 +66,28 @@ func drawLeftRightBoundries() {
 }
 
 func printMonths() {
-	currentTime := time.Now()
-	pastTime := currentTime.Add(-constants.MaxWeeks * time.Hour * 24 * 7)
+	var (
+		currentTime  time.Time
+		pastTime     time.Time
+		currentMonth time.Month
+		prevMonth    time.Month
+	)
 
-	currentMonth := pastTime.Month()
-	prevMonth := pastTime.Month()
-	pastTime = pastTime.Add(time.Hour * 24 * 7)
+	currentTime = time.Now()
+	pastTime = currentTime.Add(-constants.MaxWeeks * time.Hour * 24 * 7)
 
 	fmt.Printf(constants.BoundaryColor, " ||  ")
 
 	for pastTime.Before(currentTime) {
 		currentMonth = pastTime.Month()
 		if currentMonth != prevMonth {
-			fmt.Printf(constants.MonthColor, prevMonth.String()[:3])
+			fmt.Printf(constants.MonthColor, currentMonth.String()[:3])
 			prevMonth = currentMonth
 		} else {
 			fmt.Print("    ")
 		}
 		pastTime = pastTime.Add(time.Hour * 24 * 7)
 	}
-	fmt.Printf(constants.MonthColor, prevMonth.String()[:3])
 	fmt.Printf(constants.BoundaryColor, "||")
 }
 
