@@ -9,9 +9,16 @@ go get github.com/tanmoyopenroot/git-stats
 ```
 
 
-## Build
+## Runing the project
 Run the follwing command in the project root directory
 
 ```sh
-go run cmd/go-stats/*.go
+go run main.go
+```
+
+## Building the project
+Run the follwing command in the project root directory
+
+```sh
+go run main.go
 ```
