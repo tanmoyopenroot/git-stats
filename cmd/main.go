@@ -1,23 +1,16 @@
-package main
+package cmd
 
 import (
 	"fmt"
 	"git-stats/internals/constants"
 	"git-stats/internals/git"
 	"git-stats/internals/stats"
-	"os"
 	"path"
 	"strconv"
 )
 
-func main() {
-	rootPath, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	gitPath := path.Join(rootPath, ".git")
+// GitStats ... Run git stats
+func GitStats(gitPath string) {
 	currentBranchPath, err := git.CurrentBranchPath(gitPath)
 	if err != nil {
 		fmt.Println(err)
