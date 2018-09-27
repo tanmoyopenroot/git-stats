@@ -62,7 +62,7 @@ func drawTopBottomBoundries() {
 }
 
 func drawLeftRightBoundries() {
-	fmt.Printf(constants.BoundaryColor, " || ")
+	fmt.Printf(constants.BoundaryColor, "|| ")
 }
 
 func printMonths() {
@@ -76,7 +76,7 @@ func printMonths() {
 	currentTime = time.Now()
 	pastTime = currentTime.Add(-constants.MaxWeeks * time.Hour * 24 * 7)
 
-	fmt.Printf(constants.BoundaryColor, " ||  ")
+	fmt.Printf(constants.BoundaryColor, "|      ")
 
 	for pastTime.Before(currentTime) {
 		currentMonth = pastTime.Month()
@@ -88,7 +88,23 @@ func printMonths() {
 		}
 		pastTime = pastTime.Add(time.Hour * 24 * 7)
 	}
-	fmt.Printf(constants.BoundaryColor, "||")
+	fmt.Printf(constants.BoundaryColor, "|")
+}
+
+func printWeekdays(day int) {
+	switch day {
+	case 5:
+		fmt.Printf(constants.WeekDayColor, "Mon")
+		break
+	case 3:
+		fmt.Printf(constants.WeekDayColor, "Wed")
+		break
+	case 1:
+		fmt.Printf(constants.WeekDayColor, "Fri")
+		break
+	default:
+		fmt.Printf("   ")
+	}
 }
 
 func processCommitCells(graph [7][constants.MaxWeeks]int) {
@@ -101,9 +117,10 @@ func processCommitCells(graph [7][constants.MaxWeeks]int) {
 		}
 
 		drawLeftRightBoundries()
+		printWeekdays(i)
 
 		for j := constants.MaxWeeks - 1; j >= 0; j-- {
-			if i == 0 && j == 0 {
+			if i == (6-int(time.Now().Weekday())) && j == 0 {
 				drawCommitCell(graph[i][j], true)
 			} else {
 				drawCommitCell(graph[i][j], false)
@@ -121,6 +138,17 @@ func processCommitCells(graph [7][constants.MaxWeeks]int) {
 	}
 }
 
+func drawIndicators() {
+	fmt.Println("   Indicators:")
+	fmt.Printf("   Current Day:  "+constants.TodaysCellColor+"  %s "+constants.EndColor, "-")
+	fmt.Printf("\n")
+	fmt.Printf("   Commits:      "+constants.Commited0To5Color+"  %s "+constants.EndColor, "-")
+	fmt.Printf("   "+constants.Commited5To10Color+"  %s "+constants.EndColor, "-")
+	fmt.Printf("   "+constants.CommitedMoreThan10Color+"  %s "+constants.EndColor, "-")
+
+	fmt.Printf("\n")
+}
+
 // PlotCommits ... Plot the generated commits
 func PlotCommits(commits map[int]int) {
 	var (
@@ -128,14 +156,18 @@ func PlotCommits(commits map[int]int) {
 	)
 
 	keys := getCommitKeys(commits)
+	currentTime := time.Now()
+	currentDayNumber := int(currentTime.Weekday())
+	offset := 6 - currentDayNumber
 
 	for _, key := range keys {
-		week := int(key / 7)
-		day := key % 7
+		week := int((key + offset) / 7)
+		day := (key + offset) % 7
 
 		graph[day][week] = commits[key]
 	}
 
 	// fmt.Println(graph)
 	processCommitCells(graph)
+	drawIndicators()
 }

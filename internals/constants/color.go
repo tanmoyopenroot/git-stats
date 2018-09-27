@@ -41,6 +41,8 @@ const (
 	BoundaryColor = WhiteText + "%s" + EndText
 	// MonthColor ... set month color
 	MonthColor = WhiteText + " %s" + EndText
+	// WeekDayColor ... set weekday color
+	WeekDayColor = WhiteText + "%s" + EndText
 )
 
 // PrintAvailableColors ... Print available colors
